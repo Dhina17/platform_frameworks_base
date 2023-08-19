@@ -31,6 +31,8 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.HardwareBuffer;
+import android.os.PowerManagerInternal;
+import android.os.PowerManagerInternal.PowerExtBoosts;
 import android.util.Slog;
 import android.view.Surface;
 import android.view.SurfaceControl;
@@ -47,6 +49,7 @@ import android.window.TransitionInfo;
 
 import com.android.internal.R;
 import com.android.internal.policy.TransitionAnimation;
+import com.android.server.LocalServices;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.shared.TransactionPool;
 
@@ -121,6 +124,8 @@ class ScreenRotationAnimation {
     /** Intensity of light/whiteness of the layout after rotation occurs. */
     private float mEndLuma;
 
+    private final PowerManagerInternal mPowerManagerInternal;
+
     ScreenRotationAnimation(Context context, TransactionPool pool, Transaction t,
             TransitionInfo.Change change, SurfaceControl rootLeash, int animHint, int flags) {
         mContext = context;
@@ -142,6 +147,13 @@ class ScreenRotationAnimation {
                 .setCallsite("ShellRotationAnimation")
                 .setName("Animation leash of screenshot rotation")
                 .build();
+
+        mPowerManagerInternal = LocalServices.getService(PowerManagerInternal.class);
+
+        if (mPowerManagerInternal != null) {
+            mPowerManagerInternal.setPowerExtMode(
+                    PowerExtBoosts.APP_ROTATE.name(), true);
+        }
 
         try {
             if (change.getSnapshot() != null) {
@@ -415,6 +427,10 @@ class ScreenRotationAnimation {
         }
         t.apply();
         mTransactionPool.release(t);
+        if (mPowerManagerInternal != null) {
+            mPowerManagerInternal.setPowerExtMode(
+                    PowerExtBoosts.APP_ROTATE.name(), false);
+        }
     }
 
     private void postProcessRotationAnimation(@NonNull AnimationSet enterAnim,
