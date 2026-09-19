@@ -31,7 +31,6 @@ android_library {
         "telephony-common",
         "ims-common",
         "unsupportedappusage",
-        "framework-lmodroid.impl",
     ],
     static_libs: [
         "aconfig_device_paths_java",
@@ -45,6 +44,7 @@ android_library {
         "notification_flags_lib",
         "SettingsLibDeviceStateRotationLock",
         "SettingsLibDisplayUtils",
+        "framework-lmodroid.static",
     ],
     resource_zips: [
         ":LMOSettingsProvider-res",
