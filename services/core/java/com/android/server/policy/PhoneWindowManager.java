@@ -2655,8 +2655,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(mContext, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                interceptScreenshotChord(
-                        TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER);
+                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER);
             }
         });
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
