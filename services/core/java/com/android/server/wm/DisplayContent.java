@@ -5157,6 +5157,11 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
         return imeLayeringTarget.mSession.mUid == uid && imeLayeringTarget.mSession.mPid == pid;
     }
 
+    boolean hasSecureWindowOnScreen() {
+        final WindowState win = getWindow(w -> w.isOnScreen() && w.isSecureLocked());
+        return win != null;
+    }
+
     // TODO: Super unexpected long method that should be broken down...
     void applySurfaceChangesTransaction() {
         final WindowSurfacePlacer surfacePlacer = mWmService.mWindowPlacerLocked;
