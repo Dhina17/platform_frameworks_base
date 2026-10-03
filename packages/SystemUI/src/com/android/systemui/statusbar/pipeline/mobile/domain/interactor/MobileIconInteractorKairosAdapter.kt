@@ -125,36 +125,11 @@ fun BuildScope.MobileIconInteractorKairosAdapter(
                 isRoaming.toStateFlow(
                     nameTag { "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isRoaming" }
                 ),
-            isRoamingForceHidden =
-                MutableStateFlow(false).toStateFlow(
-                    nameTag {
-                        "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isRoamingForceHidden"
-                    }
-                ),
-            isMobileHd =
-                MutableStateFlow(false).toStateFlow(
-                    nameTag {
-                        "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isMobileHd"
-                    }
-                ),
-            isMobileHdForceHidden =
-                MutableStateFlow(false).toStateFlow(
-                    nameTag {
-                        "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isMobileHdForceHidden"
-                    }
-                ),
-            isVoWifi =
-                MutableStateFlow(false).toStateFlow(
-                    nameTag {
-                        "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isVoWifi"
-                    }
-                ),
-            isVoWifiForceHidden =
-                MutableStateFlow(false).toStateFlow(
-                    nameTag {
-                        "MobileIconInteractorKairosAdapter(subId=$subscriptionId).isVoWifiForceHidden"
-                    }
-                ),
+            isRoamingForceHidden = MutableStateFlow(false),
+            isMobileHd = MutableStateFlow(false),
+            isMobileHdForceHidden = MutableStateFlow(false),
+            isVoWifi = MutableStateFlow(false),
+            isVoWifiForceHidden = MutableStateFlow(false),
             isForceHidden =
                 isForceHidden.toColdConflatedFlow(
                     kairosNetwork,

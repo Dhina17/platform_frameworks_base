@@ -111,6 +111,7 @@ sealed interface SignalIconModel : Diffable<SignalIconModel> {
                 numberOfLevels = DEFAULT_NUM_LEVELS,
                 showExclamationMark = true,
                 carrierNetworkChange = false,
+                showRoaming = false,
             )
         private const val COL_LEVEL = "level"
         private const val COL_NUM_LEVELS = "numLevels"

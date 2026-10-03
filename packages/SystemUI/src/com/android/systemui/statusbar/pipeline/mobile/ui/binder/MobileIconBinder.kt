@@ -73,8 +73,6 @@ object MobileIconBinder {
         val mobileHdView = view.requireViewById<ImageView>(R.id.mobile_hd)
         val mobileHdSpace = view.requireViewById<Space>(R.id.mobile_hd_space)
         val endSideRoamingView = view.requireViewById<ImageView>(R.id.mobile_roaming_updated)
-        val mobileHdView = view.requireViewById<ImageView>(R.id.mobile_hd)
-        val mobileHdSpace = view.requireViewById<Space>(R.id.mobile_hd_space)
         val dotView = view.requireViewById<StatusBarIconView>(R.id.status_bar_dot)
 
         view.isVisible = viewModel.isVisible.value
