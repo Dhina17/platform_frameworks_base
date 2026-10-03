@@ -12,6 +12,7 @@ import com.android.systemui.volume.dialog.dagger.scope.VolumeDialog
 import com.android.systemui.volume.dialog.dagger.scope.VolumeDialogScope
 import com.android.systemui.volume.domain.interactor.VolumePanelNavigationInteractor
 import com.android.systemui.volume.ui.navigation.VolumeNavigator
+import com.libremobileos.providers.LMOSettings
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -33,7 +34,7 @@ constructor(
     private fun shouldShowAppVolume(): Boolean {
         val showAppVolume = Settings.System.getIntForUser(
             context.contentResolver,
-            Settings.System.SHOW_APP_VOLUME,
+            LMOSettings.System.SHOW_APP_VOLUME,
             0,
             UserHandle.USER_CURRENT
         )
@@ -57,7 +58,7 @@ constructor(
                 }
             }
             context.contentResolver.registerContentObserver(
-                Settings.System.getUriFor(Settings.System.SHOW_APP_VOLUME),
+                Settings.System.getUriFor(LMOSettings.System.SHOW_APP_VOLUME),
                 false,
                 observer,
                 UserHandle.USER_CURRENT
