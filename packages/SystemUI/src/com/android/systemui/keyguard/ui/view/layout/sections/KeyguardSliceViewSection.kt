@@ -103,7 +103,7 @@ constructor(
 
         val sliceViewId = R.id.keyguard_slice_view
         val faceIconId = R.id.face_icon_view
-        val smallClockId = customR.id.lockscreen_clock_view
+        val smallClockId = ClockViewIds.LOCKSCREEN_CLOCK_VIEW_SMALL
 
         constraintSet.apply {
             clear(sliceViewId, ConstraintSet.TOP)
