@@ -228,7 +228,7 @@ class ScreenRecordPermissionContentManager(
                         audioSource = audioMode,
                         displayId = displayId,
                         shouldShowTaps = showTaps,
-                        keepScreenAwake = keepScreenAwake
+                        keepScreenAwake = keepScreenAwake,
                     )
                 )
             },
