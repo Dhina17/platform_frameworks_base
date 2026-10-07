@@ -3606,7 +3606,12 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
                 cs.mClient.onStartInputResult(res, startInputSeq);
                 // For first-time client bind, MSG_BIND should arrive after MSG_START_INPUT_RESULT.
                 if (res.result == InputBindResult.ResultCode.SUCCESS_WAITING_IME_SESSION) {
-                    requestClientSessionLocked(cs, userId);
+                    final ParallelSpaceManagerServiceInternal parallelSpaceManager =
+                            LocalServices.getService(ParallelSpaceManagerServiceInternal.class);
+                    final int mainUserId = parallelSpaceManager != null
+                            ? parallelSpaceManager.convertToParallelOwnerIfPossible(userId)
+                            : userId;
+                    requestClientSessionLocked(cs, mainUserId);
                     requestClientSessionForAccessibilityLocked(cs);
                 }
             } else {

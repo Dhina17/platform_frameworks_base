@@ -4239,6 +4239,10 @@ public class UserManagerService extends IUserManager.Stub {
      * towards config_multiuserMaximumUsers.
      */
     private boolean isUserTypeSubjectToSwitchableUserMaximum(UserTypeDetails userTypeDetails) {
+        if (userTypeDetails.isParallel()) {
+            // Parallel spaces are not switchable and never count towards the user maximum.
+            return false;
+        }
         if (!android.multiuser.Flags.decoupleMaxUsersFromProfiles()) {
             return !shouldUserTypeIgnoreOverallDeviceUserMaximum(userTypeDetails.getName());
         }
