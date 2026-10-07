@@ -1340,7 +1340,8 @@ public final class BatteryService extends SystemService {
                 || mHealthInfo.batteryCapacityLevel != mLastBroadcastBatteryCapacityLevel
                 || mHealthInfo.batteryFullChargeUah != mLastBroadcastBatteryFullCharge
                 || mHealthInfo.batteryFullChargeDesignCapacityUah !=
-                        mLastBroadcastBatteryFullChargeDesign;
+                        mLastBroadcastBatteryFullChargeDesign
+                || mOemFastCharging != mLastOemFastCharging;
 
         // We only rate limit based on changes in the temp, voltage.
         if (otherStatesUpdated) {
