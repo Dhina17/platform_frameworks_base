@@ -38,7 +38,6 @@ import com.android.systemui.plugins.DarkIconDispatcher
 import com.android.systemui.res.R
 import com.android.systemui.statusbar.StatusBarIconView
 import com.android.systemui.statusbar.StatusBarIconView.STATE_HIDDEN
-import com.android.systemui.statusbar.core.NewStatusBarIcons
 import com.android.systemui.statusbar.pipeline.mobile.domain.model.SignalIconModel
 import com.android.systemui.statusbar.pipeline.mobile.ui.MobileViewLogger
 import com.android.systemui.statusbar.pipeline.mobile.ui.viewmodel.LocationBasedMobileViewModel
@@ -72,7 +71,6 @@ object MobileIconBinder {
         val mobileDrawable = SignalDrawable(view.context)
         val mobileHdView = view.requireViewById<ImageView>(R.id.mobile_hd)
         val mobileHdSpace = view.requireViewById<Space>(R.id.mobile_hd_space)
-        val endSideRoamingView = view.requireViewById<ImageView>(R.id.mobile_roaming_updated)
         val dotView = view.requireViewById<StatusBarIconView>(R.id.status_bar_dot)
 
         view.isVisible = viewModel.isVisible.value
