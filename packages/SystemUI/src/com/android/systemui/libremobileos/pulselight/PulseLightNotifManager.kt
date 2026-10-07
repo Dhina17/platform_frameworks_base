@@ -29,9 +29,11 @@ import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.plugins.statusbar.StatusBarStateController
 import com.android.systemui.res.R
 import com.android.systemui.statusbar.notification.collection.NotificationEntry
-import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider
+import com.android.systemui.statusbar.notification.interruption.VisualInterruptionDecisionProvider
 
 import com.libremobileos.providers.LMOSettings
+
+import dagger.Lazy
 
 import javax.inject.Inject
 
@@ -40,7 +42,7 @@ class PulseLightNotifManager @Inject constructor(
     private val context: Context,
     @Main private val handler: Handler,
     private val statusBarStateController: StatusBarStateController,
-    private val notificationInterruptStateProvider: NotificationInterruptStateProvider
+    private val visualInterruptionDecisionProvider: Lazy<VisualInterruptionDecisionProvider>
 ) {
 
     private var notifListener: PulseLightNotifListener? = null
@@ -178,7 +180,7 @@ class PulseLightNotifManager @Inject constructor(
 
         // We want to show pulse on headsup like notifications
         // Do check like that.
-        return notificationInterruptStateProvider
+        return visualInterruptionDecisionProvider.get()
                 .shouldShowPulseLight(entry, onlyWhenFaceDown)
     }
 
