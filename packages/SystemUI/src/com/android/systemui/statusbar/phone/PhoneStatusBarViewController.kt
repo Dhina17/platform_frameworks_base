@@ -16,6 +16,11 @@
 package com.android.systemui.statusbar.phone
 
 import android.app.StatusBarManager.WINDOW_STATUS_BAR
+import android.database.ContentObserver
+import android.os.Handler
+import android.os.Looper
+import android.os.UserHandle
+import android.provider.Settings
 import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
 import android.view.GestureDetector
@@ -54,6 +59,7 @@ import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel
 import com.android.systemui.util.ViewController
 import com.android.systemui.util.kotlin.getOrNull
 import com.android.systemui.util.view.ViewUtil
+import com.libremobileos.providers.LMOSettings
 import dagger.Lazy
 import java.util.Optional
 import javax.inject.Inject
@@ -162,6 +168,25 @@ private constructor(
         }
     }
 
+    private val brightnessControlObserver =
+        object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                updateBrightnessControl()
+            }
+        }
+
+    private fun updateBrightnessControl() {
+        // Brightness control only adjusts the default display.
+        mView.brightnessControlEnabled =
+            mView.context.displayId == DEFAULT_DISPLAY &&
+                Settings.System.getIntForUser(
+                    mView.context.contentResolver,
+                    LMOSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
+                    0,
+                    UserHandle.USER_CURRENT,
+                ) != 0
+    }
+
     private val configurationListener =
         object : ConfigurationController.ConfigurationListener {
             override fun onDensityOrFontScaleChanged() {
@@ -205,6 +230,14 @@ private constructor(
         if (!StatusBarConnectedDisplays.isEnabled) {
             mView.setStatusBarWindowControllerStore(statusBarWindowControllerStore)
         }
+
+        mView.context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(LMOSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL),
+            false,
+            brightnessControlObserver,
+            UserHandle.USER_ALL,
+        )
+        updateBrightnessControl()
     }
 
     private fun addCursorSupportToIconContainers() {
@@ -261,6 +294,7 @@ private constructor(
         if (!ShadeWindowGoesAround.isEnabled) {
             configurationController.removeCallback(configurationListener)
         }
+        mView.context.contentResolver.unregisterContentObserver(brightnessControlObserver)
     }
 
     init {
@@ -277,14 +311,6 @@ private constructor(
 
     fun setImportantForAccessibility(mode: Int) {
         mView.importantForAccessibility = mode
-    }
-
-    fun setBrightnessControlEnabled(enabled: Boolean) {
-        mView.brightnessControlEnabled = enabled
-    }
-
-    fun performHapticFeedback(feedbackConstant: Int) {
-        mView.performHapticFeedback(feedbackConstant)
     }
 
     /**
@@ -309,7 +335,7 @@ private constructor(
     /** Called when a touch event occurred on {@link PhoneStatusBarView}. */
     fun onTouch(event: MotionEvent) {
         if (mView.brightnessControlEnabled) {
-            centralSurfaces.brightnessControl(event)
+            centralSurfaces.brightnessControl(mView, event)
             if (!centralSurfaces.commandQueuePanelsEnabled) return
         }
 

@@ -54,7 +54,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.database.ContentObserver;
 import android.graphics.Point;
 import android.hardware.devicestate.DeviceStateManager;
 import android.hardware.display.DisplayManager;
@@ -251,8 +250,6 @@ import com.android.systemui.wallet.controller.QuickAccessWalletController;
 import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.SplashscreenContentDrawer;
 import com.android.wm.shell.startingsurface.StartingSurface;
-
-import com.libremobileos.providers.LMOSettings;
 
 import dalvik.annotation.optimization.NeverCompile;
 
@@ -493,8 +490,9 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     private int mLinger;
     private int mQuickQsOffsetHeight;
     private boolean mBrightnessChanged;
-    private boolean mBrightnessControl;
     private boolean mJustPeeked;
+    @Nullable
+    private View mBrightnessControlView;
     private float mCurrentBrightness;
 
     private final DisplayMetrics mDisplayMetrics;
@@ -931,26 +929,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
 
         mColorExtractor.addOnColorsChangedListener(mOnColorsChangedListener);
 
-        Uri statusbarBrightnessControl = Settings.System.getUriFor(
-                LMOSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL);
-        ContentObserver contentObserver = new ContentObserver(null) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                if (uri.equals(statusbarBrightnessControl)) {
-                    mBrightnessControl = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            LMOSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
-                            0, UserHandle.USER_CURRENT) != 0;
-                    if (mPhoneStatusBarViewController != null) {
-                        mPhoneStatusBarViewController.setBrightnessControlEnabled(mBrightnessControl);
-                    }
-                }
-            }
-        };
-        mContext.getContentResolver().registerContentObserver(
-                statusbarBrightnessControl, false, contentObserver);
-        contentObserver.onChange(true, statusbarBrightnessControl);
-
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
         mDisplay = mContext.getDisplay();
@@ -1304,7 +1282,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
                         mShadeSurface.updateExpansionAndVisibility();
                         setBouncerShowingForStatusBarComponents(mBouncerShowing);
                         checkBarModes();
-                        mPhoneStatusBarViewController.setBrightnessControlEnabled(mBrightnessControl);
                     });
         }
         if (!StatusBarRootModernization.isEnabled() && !StatusBarConnectedDisplays.isEnabled()) {
@@ -1794,7 +1771,8 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     }
 
     @Override
-    public void brightnessControl(MotionEvent event) {
+    public void brightnessControl(View view, MotionEvent event) {
+        mBrightnessControlView = view;
         final int action = event.getAction();
         final int x = (int) event.getRawX();
         final int y = (int) event.getRawY();
@@ -1849,7 +1827,9 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     }
 
     void onLongPressBrightnessChange() {
-        mPhoneStatusBarViewController.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        if (mBrightnessControlView != null) {
+            mBrightnessControlView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        }
         adjustBrightness(mInitialTouchX);
         mLinger = BRIGHTNESS_CONTROL_LINGER_THRESHOLD + 1;
     }
