@@ -134,7 +134,7 @@ public final class UserTypeFactory {
                 .setName(USER_TYPE_PARALLEL_DEFAULT)
                 .setBaseType(FLAG_FULL)
                 .setDefaultUserInfoPropertyFlags(FLAG_PARALLEL)
-                .setMaxAllowed(getMaxManagedProfiles())
+                .setMaxAllowed(getMaxParallelSpaces())
                 .setDefaultRestrictions(getDefaultParallelRestrictions())
                 .setIconBadge(com.android.internal.R.drawable.ic_parallel_icon_badge)
                 .setBadgePlain(com.android.internal.R.drawable.ic_parallel_badge)
@@ -161,7 +161,7 @@ public final class UserTypeFactory {
                 .setName(USER_TYPE_PARALLEL_SHARE)
                 .setBaseType(FLAG_FULL)
                 .setDefaultUserInfoPropertyFlags(FLAG_PARALLEL)
-                .setMaxAllowed(getMaxManagedProfiles())
+                .setMaxAllowed(getMaxParallelSpaces())
                 .setDefaultRestrictions(getDefaultParallelRestrictions())
                 .setDefaultUserProperties(new UserProperties.Builder()
                         .setMediaSharedWithParent(true))
@@ -583,6 +583,11 @@ public final class UserTypeFactory {
         return restrictions;
     }
     
+    private static int getMaxParallelSpaces() {
+        return Resources.getSystem().getInteger(
+                com.android.internal.R.integer.config_parallelSpaceMaxCount);
+    }
+
     private static Bundle getDefaultParallelRestrictions() {
         final Bundle restrictions = new Bundle();
         restrictions.putBoolean(UserManager.DISALLOW_WALLPAPER, true);
