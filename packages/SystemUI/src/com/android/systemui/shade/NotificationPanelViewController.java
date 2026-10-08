@@ -933,7 +933,10 @@ public final class NotificationPanelViewController implements
         mQsController.init();
         mShadeHeadsUpTracker.addTrackingHeadsUpListener(
                 mNotificationStackScrollLayoutController::setTrackingHeadsUp);
-        mPulseLightView = (PulseLightView) mView.findViewById(R.id.pulse_light_view);
+        // The pulse light lives in the shade window, above the light reveal scrim.
+        final View rootView = mView.getRootView();
+        mPulseLightView = rootView != null
+                ? rootView.findViewById(R.id.pulse_light_view) : null;
         mWakeUpCoordinator.setStackScroller(mNotificationStackScrollLayoutController);
         mWakeUpCoordinator.addListener(new NotificationWakeUpCoordinator.WakeUpListener() {
             @Override
