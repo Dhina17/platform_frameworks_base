@@ -53,7 +53,20 @@ fun QSFooterDataUsage(
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             modifier =
-                modifier.wrapContentWidth().basicMarquee(iterations = 1, initialDelayMillis = 1000),
+                modifier
+                    .wrapContentWidth()
+                    // Keep scrolling while QS is visible so long usage texts can be read. The
+                    // marquee restarts every time QS is shown.
+                    .then(
+                        if (visible) {
+                            Modifier.basicMarquee(
+                                iterations = Int.MAX_VALUE,
+                                initialDelayMillis = 1000,
+                            )
+                        } else {
+                            Modifier
+                        }
+                    ),
         )
     } else {
         Spacer(modifier)
